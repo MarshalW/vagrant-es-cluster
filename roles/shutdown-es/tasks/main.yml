@@ -1,0 +1,5 @@
+---
+- name: Shutdown elasticsearch from docker-compose
+  shell: |
+    cd {{elasticsearch_path}}
+    docker-compose down

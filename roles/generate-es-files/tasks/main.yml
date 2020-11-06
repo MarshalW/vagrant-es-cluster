@@ -1,0 +1,22 @@
+---
+- name: Delete path if exits
+  file:
+    path: "{{elasticsearch_path}}"
+    state: absent
+- name: Create elasticsearch path
+  file:
+    path: "{{elasticsearch_path}}"
+    state: directory
+- name: Create elasticsearch data path
+  when: elasticsearch_data_path is defined 
+  file:
+    path: "{{elasticsearch_data_path}}"
+    state: directory
+- name: Copy docker-compose.yml to es
+  template:
+    src: "{{ role_path }}/files/docker-compose.yml.j2"
+    dest: "{{elasticsearch_path}}/docker-compose.yml"
+- name: Copy config.yml to es
+  template:
+    src: "{{ role_path }}/files/config.yml.j2"
+    dest: "{{elasticsearch_path}}/config.yml"

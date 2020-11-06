@@ -1,0 +1,5 @@
+---
+- name: Run elasticsearch from docker-compose
+  shell: |
+    cd {{elasticsearch_path}}
+    docker-compose up -d

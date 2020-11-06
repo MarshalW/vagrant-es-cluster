@@ -1,0 +1,31 @@
+version: "3.7"
+
+services:
+    elasticsearch:
+      image: elasticsearch:{{elasticsearch_version}}
+      container_name: elasticsearch
+      environment:
+        TAKE_FILE_OWNERSHIP: "true"
+        bootstrap.memory_lock: "true"
+        ES_JAVA_OPTS: "-Xms{{elasticsearch_heap_size}} -Xmx{{elasticsearch_heap_size}}"
+        discovery.seed_hosts: "{{elasticsearch_seed_hosts}}"
+{%if elasticsearch_initial_master_nodes is defined %}
+        cluster.initial_master_nodes: "{{elasticsearch_initial_master_nodes}}"
+{% endif %}
+        node.name: {{inventory_hostname}}
+        network.bind_host: "{{inventory_hostname}},  _local_"
+        network.publish_host: {{inventory_hostname}}
+      network_mode: "host"
+      ulimits:
+        memlock:
+          soft: -1
+          hard: -1
+        nofile:
+          soft: 65535
+          hard: 65535
+      volumes:
+        - ./config.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+        - /etc/localtime:/etc/localtime:ro
+{% if elasticsearch_data_path is defined %}
+        - {{elasticsearch_data_path}}:/usr/share/elasticsearch/data
+{% endif %}
